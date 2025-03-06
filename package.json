@@ -20,6 +20,7 @@
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.2",
     "esbuild": "^0.25.0",
     "esbuild-postcss": "^0.0.4",
     "postcss": "^8.5.3",

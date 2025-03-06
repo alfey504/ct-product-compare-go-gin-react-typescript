@@ -1,4 +1,4 @@
-package api_services
+package api_utils
 
 import (
 	"bytes"

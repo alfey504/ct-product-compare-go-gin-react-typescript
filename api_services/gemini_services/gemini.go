@@ -1,4 +1,4 @@
-package gemini
+package gemini_services
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	"ct.com/ct_compare/models"
 )
 
-// gemini request model
+// gemini request modelz
 type GeminiRequest struct {
 	Contents []GeminiContent `json:"contents"`
 }
@@ -24,9 +24,9 @@ type GeminiPart struct {
 func MakeGeminiRequest(prompt string) GeminiRequest {
 	return GeminiRequest{
 		Contents: []GeminiContent{
-			GeminiContent{
+			{
 				Parts: []GeminiPart{
-					GeminiPart{Text: prompt},
+					{Text: prompt},
 				},
 			},
 		},

@@ -9,7 +9,7 @@ export type Product =  {
     ShortDescription: string
     Description: string
     Rating : string
-    RatingCount : string
+    RatingsCount : string
     Specifications : Specification[]
     Features: string[]
     ReviewSummary : ReviewSummary

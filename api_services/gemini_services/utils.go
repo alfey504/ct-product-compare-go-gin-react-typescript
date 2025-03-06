@@ -1,4 +1,4 @@
-package gemini
+package gemini_services
 
 // func parseTextFromResponse(resp *genai.GenerateContentResponse) string {
 // 	responseString := ""

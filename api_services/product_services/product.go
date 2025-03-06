@@ -3,7 +3,7 @@ package product_services
 import (
 	"fmt"
 
-	gemini "ct.com/ct_compare/api_services/gemini_services"
+	"ct.com/ct_compare/api_services/gemini_services"
 	"ct.com/ct_compare/models"
 )
 
@@ -20,7 +20,7 @@ func ProductCompare(pno1 string, pno2 string) (models.ProductCompare, error) {
 		return models.ProductCompare{}, err
 	}
 
-	summary, err := gemini.GetSummary(product1, product2)
+	summary, err := gemini_services.GetSummary(product1, product2)
 	if err != nil {
 		fmt.Println("Failed to get summary from gemini API ", err.Error())
 		return models.ProductCompare{}, err
