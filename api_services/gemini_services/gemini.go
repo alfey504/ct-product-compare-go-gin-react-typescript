@@ -77,31 +77,3 @@ func GetSummary(p1 models.Product, p2 models.Product) (models.Summary, error) {
 
 	return summary, nil
 }
-
-// Googles library
-// func GetSummary(prompt string) (models.Summary, error) {
-// 	ctx := context.Background()
-// 	client, err := genai.NewClient(ctx, option.WithAPIKey("AIzaSyDcx8obzZ7eYHpdxrZoCIuAPzJWvk5Y2qk"))
-
-// 	if err != nil {
-// 		println("Failed to make gemini client " + err.Error())
-// 		return models.Summary{}, err
-// 	}
-
-// 	model := client.GenerativeModel("gemini-2.0-flash")
-// 	response, err := model.GenerateContent(ctx, genai.Text(prompt))
-// 	if err != nil {
-// 		println("Failed to generate content ,", err.Error())
-// 		return models.Summary{}, err
-// 	}
-
-// 	jsonString := parseTextFromResponse(response)
-// 	summary, err := models.MakeSummary(jsonString)
-
-// 	if err != nil {
-// 		println("Failed to make summary model ,", err.Error())
-// 		return models.Summary{}, err
-// 	}
-
-// 	return summary, nil
-// }
