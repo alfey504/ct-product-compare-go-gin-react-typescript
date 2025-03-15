@@ -1,13 +1,15 @@
 import React, { useRef, useState } from "react";
-import { ProductCompare } from "../type";
-import { getSummary, tempGetSummary } from "./services";
+import { Product, ProductCompare } from "../type";
+import { tempGetSummary } from "./services";
+import ProductSummary from "./product_summary";
 import { Navbar } from "./navbar";
+import { ProductDetails } from "./product_details";
 
 const Menu = class {
-  static PRODUCT_SUMMARY = "product_summary"
-  static PRODUCT_DETAILS = "product_details"
-  static REVIEW_SUMMARY = "review_summary"
-}
+  static PRODUCT_SUMMARY = "product_summary";
+  static PRODUCT_DETAILS = "product_details";
+  static REVIEW_SUMMARY = "review_summary";
+};
 
 export default function Application() {
   const [product, setProduct] = useState<ProductCompare | undefined>(undefined);
@@ -44,77 +46,82 @@ export default function Application() {
         product2Ref={product2Ref}
         buttonPress={buttonPressHandler}
       />
-      <Product productCompare={product}/>
+
+      <Product productCompare={product} />
     </div>
   );
 }
 
 function Product({
-  productCompare
-}:{
-  productCompare: ProductCompare | undefined
+  productCompare,
+}: {
+  productCompare: ProductCompare | undefined;
 }) {
-
-  const [ selectedMenu, setSelectedMenu ] = useState(Menu.PRODUCT_SUMMARY)
-  const menuSelectFunction = (menu: string) => setSelectedMenu(menu)
+  const [selectedMenu, setSelectedMenu] = useState(Menu.PRODUCT_SUMMARY);
+  const menuSelectFunction = (menu: string) => setSelectedMenu(menu);
 
   const getScreen = (selectedMenu: string) => {
-    if (selectedMenu == Menu.PRODUCT_SUMMARY) {
-      return <ProductSummary product={productCompare}/>
+    if (productCompare == undefined) {
+      return <div>Please enter a product number</div>;
     }
-  }
-  
+
+    if (selectedMenu == Menu.PRODUCT_SUMMARY) {
+      return <ProductSummary product={productCompare} />;
+    }
+
+    if (selectedMenu == Menu.PRODUCT_DETAILS) {
+      return (
+        <ProductDetails
+          product1={productCompare.Product1}
+          product2={productCompare.Product2}
+        />
+      );
+    }
+  };
+
   return (
-    <div >
-      <OptionWheel currentMenu={selectedMenu} menuSetter={menuSelectFunction}/>
-      {getScreen(selectedMenu)}
+    <div>
+      <OptionWheel currentMenu={selectedMenu} menuSetter={menuSelectFunction} />
+      <div className="mt-10 ml-10 mr-10 mb-10">{getScreen(selectedMenu)}</div>
     </div>
-  )
+  );
 }
 
-function  OptionWheel({
+function OptionWheel({
   currentMenu,
-  menuSetter
-}:{
-  currentMenu: string,
-  menuSetter: (string) => void 
+  menuSetter,
+}: {
+  currentMenu: string;
+  menuSetter: (string) => void;
 }) {
-
-  // const selectedClasses = "bg-amber-100 border-b-2 border-b-gray-500  p-3 w-xl"
-  const selectedClasses = " border-b-2 border-b-green-800  p-3 w-xl" 
-  const notSelectedClasses = "p-3 w-xl color-gradient-green-800 transition-colors duration-200 p-4 hover:text-white"
-  const getClasses = (menu: string):string => (currentMenu == menu) ?  selectedClasses: notSelectedClasses
+  const selectedClasses = " border-b-2 border-b-green-800  p-3 w-xl";
+  const notSelectedClasses =
+    "p-3 w-xl color-gradient-green-800 transition-colors duration-200 p-4 hover:text-white";
+  const getClasses = (menu: string): string =>
+    currentMenu == menu ? selectedClasses : notSelectedClasses;
 
   return (
     <div className="flex flex-row items-center justify-center mt-3 ml-64 mr-64 ">
-      <button className={getClasses(Menu.PRODUCT_SUMMARY)} onClick={() => menuSetter(Menu.PRODUCT_SUMMARY)}>Summary</button>
-      <button className={getClasses(Menu.PRODUCT_DETAILS)} onClick={() => menuSetter(Menu.PRODUCT_DETAILS)}>Product Details</button>
-      <button className={getClasses(Menu.REVIEW_SUMMARY)} onClick={() => menuSetter(Menu.REVIEW_SUMMARY)}>Review Summary</button>
+      <button
+        className={getClasses(Menu.PRODUCT_SUMMARY)}
+        onClick={() => menuSetter(Menu.PRODUCT_SUMMARY)}
+      >
+        Summary
+      </button>
+      <button
+        className={getClasses(Menu.PRODUCT_DETAILS)}
+        onClick={() => menuSetter(Menu.PRODUCT_DETAILS)}
+      >
+        Product Details
+      </button>
+      <button
+        className={getClasses(Menu.REVIEW_SUMMARY)}
+        onClick={() => menuSetter(Menu.REVIEW_SUMMARY)}
+      >
+        Review Summary
+      </button>
     </div>
-  )
+  );
 }
 
 
-function ProductSummary({
-  product
-}:{
-  product: ProductCompare | undefined
-}) {
-
-  if (product == undefined) {
-    return <div className="flex flex-grow h-1/2 justify-center items-center">please enter the product numbers</div>
-  }
-
-  return (
-    <div className="mt-10">
-      <h1>Product 1</h1>
-      <p>Name: {product?.Product1.Name}</p>
-      <p>Summary:</p>
-      <ul>
-      {product?.Product1.Summary.map((summary: string)=>{
-        return <li>{summary}</li>
-      })}
-      </ul>
-    </div>
-  )
-}

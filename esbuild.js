@@ -1,5 +1,5 @@
-const esbuild = require('esbuild')
-const postCssPlugin = require("esbuild-postcss")
+import esbuild from 'esbuild'
+import postCssPlugin from "esbuild-postcss"
 
 
 // Create a build context
