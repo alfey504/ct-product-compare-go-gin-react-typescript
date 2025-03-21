@@ -18,11 +18,17 @@ func main() {
 	r.Static("/public/assets/", "./public/assets/")
 	r.LoadHTMLGlob("views/*")
 
+	r.POST("/login", controllers.LoginUser)
+	r.GET("/login", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"route": "/login",
+		})
+	})
+
 	apiGroup := r.Group("/api")
 	apiGroup.Use(middleware.AuthMiddleware)
 
 	apiGroup.GET("/product", controllers.ProductController)
-	r.POST("/login", controllers.LoginUser)
 
 	appGroup := r.Group("/app")
 	appGroup.Use(middleware.AuthMiddleware)
@@ -34,10 +40,5 @@ func main() {
 		})
 	})
 
-	r.GET("/login", func(ctx *gin.Context) {
-		ctx.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"route": "/login",
-		})
-	})
 	r.Run(":8080")
 }
