@@ -23,26 +23,25 @@ type RequestConfig struct {
 	Body    interface{}
 }
 
-func Fetch[K interface{}](config RequestConfig, model *K) error {
+func Fetch[K interface{}](config RequestConfig, model *K) FetchError {
 	if !slices.Contains(AVAILABLE_METHODS, config.Method) {
-		return fmt.Errorf("unknown method : %s ", config.Method)
+		err := fmt.Errorf("unknown method : %s ", config.Method)
+		return FetchError{
+			StatusCode: -1,
+			Status:     fmt.Sprintf("unknown method : %s ", config.Method),
+			Message:    fmt.Sprintf("unknown method : %s ", config.Method),
+			Err:        err,
+		}
 	}
 
-	bodyJsonString := []byte{}
-	var req *http.Request
-	var err error
-	if config.Body != nil {
-		bodyJsonString, err = json.Marshal(config.Body)
-		if err != nil {
-			fmt.Println("Failed to marshal request body ", err.Error())
-			return err
-		}
-		req, err = http.NewRequest(config.Method, config.Url, bytes.NewBuffer(bodyJsonString))
-	} else {
-		req, err = http.NewRequest(config.Method, config.Url, nil)
-		if err != nil {
-			fmt.Println("Failed to make request object : ", err.Error())
-			return err
+	req, err := MakeRequest(config)
+	if err != nil {
+		fmt.Printf("Failed to make request error : %s \n", err.Error())
+		return FetchError{
+			StatusCode: -1,
+			Status:     "Failed to make request object",
+			Message:    "Failed to make request object",
+			Err:        err,
 		}
 	}
 
@@ -52,26 +51,76 @@ func Fetch[K interface{}](config RequestConfig, model *K) error {
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
-
 	if err != nil {
-		fmt.Println("Failed to make the request : ", err.Error())
-		return err
+		fmt.Println("Request failed : ", err.Error())
+		return FetchError{
+			StatusCode: resp.StatusCode,
+			Status:     resp.Status,
+			Message:    "Error making api call",
+			Err:        err,
+		}
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return fmt.Errorf("returned status code : %d status : %s", resp.StatusCode, resp.Status)
+		msg := fmt.Sprintf("returned status code : %d status : %s", resp.StatusCode, resp.Status)
+		return FetchError{
+			StatusCode: resp.StatusCode,
+			Status:     resp.Status,
+			Message:    "api request failed",
+			Err:        fmt.Errorf(msg),
+		}
 	}
-
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Failed to parse the response body")
-		return err
+		return FetchError{
+			StatusCode: resp.StatusCode,
+			Status:     resp.Status,
+			Message:    "Failed to parse api body",
+			Err:        err,
+		}
 	}
 
 	if err := json.Unmarshal(body, model); err != nil {
 		fmt.Println("Failed to parse body to model : ", err.Error())
-		return err
+		return FetchError{
+			StatusCode: resp.StatusCode,
+			Status:     resp.Status,
+			Message:    "failed to parse response body",
+			Err:        err,
+		}
 	}
-	return nil
+
+	return FetchError{
+		StatusCode: resp.StatusCode,
+		Status:     resp.Status,
+		Message:    "Success",
+		Err:        nil,
+	}
+}
+
+func MakeRequest(config RequestConfig) (*http.Request, error) {
+	bodyJsonString := []byte{}
+	var req *http.Request
+	var err error
+	if config.Body != nil {
+		bodyJsonString, err = json.Marshal(config.Body)
+		if err != nil {
+			fmt.Println("Failed to marshal request body ", err.Error())
+			return nil, err
+		}
+		req, err = http.NewRequest(config.Method, config.Url, bytes.NewBuffer(bodyJsonString))
+		if err != nil {
+			fmt.Println("Failed to make request object : ", err.Error())
+			return nil, err
+		}
+	} else {
+		req, err = http.NewRequest(config.Method, config.Url, nil)
+		if err != nil {
+			fmt.Println("Failed to make request object : ", err.Error())
+			return nil, err
+		}
+	}
+	return req, nil
 }

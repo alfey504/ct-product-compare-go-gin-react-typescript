@@ -1,15 +1,20 @@
 import esbuild from 'esbuild'
 import postCssPlugin from "esbuild-postcss"
+import { globSync } from "glob"
 
 
 // Create a build context
 
+const reactEntryPoints = globSync("frontend/**/entry.tsx")
+const cssEntryPoints = globSync("frontend/**/*.css")
+
 const context = await esbuild.context({
-    entryPoints: ["frontend/global.css", "frontend/entry.tsx"],
+    entryPoints: [...reactEntryPoints, ...cssEntryPoints],
     outdir: "public/assets",
     bundle: true,
     plugins: [postCssPlugin()],
     loader: {".css": "css" },
+    outbase: "frontend/",
 });
 
 

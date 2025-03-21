@@ -10,5 +10,6 @@
 
 .color-gradient-green-800:hover {
     background: rgb(18,46,2);
-background: linear-gradient(0deg, rgba(18,46,2,0.8127626050420168) 0%, rgba(42,66,5,0.5186449579831933) 41%, rgba(0,212,255,0) 100%);
+    background: linear-gradient(0deg, rgba(18,46,2,0.8127626050420168) 0%, rgba(42,66,5,0.5186449579831933) 41%, rgba(0,212,255,0) 100%);
 }
+

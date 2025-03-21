@@ -2,6 +2,7 @@ package product_services
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 
 	"ct.com/ct_compare/api_services/api_utils"
@@ -9,12 +10,19 @@ import (
 	"ct.com/ct_compare/models/response_model"
 )
 
-func GetProduct(productNo string) (response_model.ProductResponse, error) {
+var productDoesNotExistErr = fmt.Errorf("product does not exists")
+
+func GetProduct(productNo string) (response_model.ProductResponse, api_utils.FetchError) {
 	url := fmt.Sprintf("https://apim.canadiantire.ca/v1/product/api/v1/product/productFamily/%sp?baseStoreId=CTR&lang=en_CA&storeId=175&light=true", productNo)
 
 	ocp_apim_subscription_key, ok := os.LookupEnv(keys.OS_ENV_OCP_APIM_SUBSCRIPTION_KEY)
 	if !ok {
-		return response_model.ProductResponse{}, fmt.Errorf("failed to load ocp-apim-subscription key from os env variables")
+		return response_model.ProductResponse{}, api_utils.FetchError{
+			StatusCode: http.StatusInternalServerError,
+			Status:     "Error: 500 internal server error",
+			Message:    "Failed to fetch product details due to internal server error",
+			Err:        fmt.Errorf("Missing OCP_APIM_SUBSCRIPTION_KEY in env variables"),
+		}
 	}
 
 	requestConfig := api_utils.RequestConfig{
@@ -27,10 +35,27 @@ func GetProduct(productNo string) (response_model.ProductResponse, error) {
 		},
 		Body: nil,
 	}
+
 	product := response_model.ProductResponse{}
-	if err := api_utils.Fetch(requestConfig, &product); err != nil {
+	err := api_utils.Fetch(requestConfig, &product)
+	if err.IsError() {
 		fmt.Println("Failed to make Api request : ", err.Error())
+		if err.StatusCode == 404 {
+			return response_model.ProductResponse{}, api_utils.FetchError{
+				StatusCode: http.StatusNotFound,
+				Status:     "Product number does not exist",
+				Message:    fmt.Sprintf("product number %s does not exist", productNo),
+				Err:        fmt.Errorf("product number %s not found", productNo),
+			}
+		}
+
+		return response_model.ProductResponse{}, api_utils.FetchError{
+			StatusCode: http.StatusInternalServerError,
+			Status:     err.Status,
+			Message:    "Failed to fetch product details due to internal server issues",
+			Err:        err.Err,
+		}
 	}
 
-	return product, nil
+	return product, err
 }

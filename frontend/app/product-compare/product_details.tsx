@@ -1,5 +1,5 @@
 import React from "react";
-import { Product, Specification } from "../type";
+import { Product, Specification } from "../../type";
 
 export function ProductDetails({
     product1,

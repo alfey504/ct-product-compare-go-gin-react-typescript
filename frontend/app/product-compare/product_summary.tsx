@@ -1,5 +1,5 @@
 import React from "react"
-import { Product, ProductCompare } from "../type"
+import { Product, ProductCompare } from "../../type"
 
 
 export default function ProductSummary({

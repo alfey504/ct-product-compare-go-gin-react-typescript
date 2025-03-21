@@ -1,4 +1,15 @@
 
+export type User = {
+    Username: string,
+    Password: string
+}
+
+export type ApiResponse<T> = {
+    StatusCode: number
+    Message: string
+    Data: T | null
+}
+
 export type ProductCompare = {
     Product1: Product
     Product2: Product
