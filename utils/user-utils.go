@@ -49,3 +49,21 @@ func GetUserCookie(ctx *gin.Context) (models.User, error) {
 		Password: password,
 	}, nil
 }
+
+func IsAuthorized(ctx *gin.Context) bool {
+	user, err := GetUser()
+	if err != nil {
+		return false
+	}
+
+	userCookies, err := GetUserCookie(ctx)
+	if err != nil {
+		return false
+	}
+
+	if user.Username != userCookies.Username || user.Password != user.Password {
+		return false
+	}
+
+	return true
+}

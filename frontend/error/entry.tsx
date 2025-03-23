@@ -1,7 +1,7 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import App from "./page"
-import { ErrorProp } from "../../type"
+import { ErrorProp } from "../type"
 
 const initialProps = (window as any).__INITIAL_PROPS__ as ErrorProp
 

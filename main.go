@@ -22,8 +22,12 @@ func main() {
 
 	r.POST("/login", controllers.LoginUser)
 	r.GET("/login", func(ctx *gin.Context) {
+		isAuthorized := utils.IsAuthorized(ctx)
 		ctx.HTML(http.StatusOK, "index.tmpl", gin.H{
 			"route": "/login",
+			"props": gin.H{
+				"authorized": isAuthorized,
+			},
 		})
 	})
 
