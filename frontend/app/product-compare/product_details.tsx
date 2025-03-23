@@ -14,8 +14,8 @@ export function ProductDetails({
     return (
       <div className={classes}>
         <div className="flex flex-row justify-between">
-          <ProductDetailBlock product={product1} />
-          <ProductDetailBlock product={product2} />
+          <ProductDetailBlock className="flex-1/2" product={product1} />
+          <ProductDetailBlock className="flex-1/2" product={product2} />
         </div>
       </div>
     );

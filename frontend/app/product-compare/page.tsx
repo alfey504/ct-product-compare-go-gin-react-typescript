@@ -87,7 +87,7 @@ function OptionWheel({
         className={getClasses(Menu.PRODUCT_DETAILS)}
         onClick={() => menuSetter(Menu.PRODUCT_DETAILS)}
       >
-        Product Details∂
+        Product Details
       </button>
       <button
         className={getClasses(Menu.REVIEW_SUMMARY)}

@@ -14,7 +14,9 @@ func main() {
 	if err := utils.LoadEnv(".env", keys.OS_ENV_GEMINI_API_KEY); err != nil {
 		panic(err)
 	}
+
 	r := gin.Default()
+
 	r.Static("/public/assets/", "./public/assets/")
 	r.LoadHTMLGlob("views/*")
 

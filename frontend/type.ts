@@ -49,3 +49,13 @@ export type Subject = {
     MentionsCount: number
     Examples: Review[]
 }
+
+export type ErrorProp = {
+    ErrorCode: number,
+    Message: string,
+    Redirect: {
+        DoesRedirect: boolean,
+        HyperLink: string,
+        Title: string,
+    }
+}
