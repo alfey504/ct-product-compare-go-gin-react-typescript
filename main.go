@@ -51,8 +51,10 @@ func main() {
 
 	env_port, ok := os.LookupEnv("PORT")
 	if !ok {
-		env_port = ":8080"
+		env_port = "8080"
 	}
 
-	r.Run(env_port)
+	port := ":" + env_port
+	println("PORT -> ", port)
+	r.Run(port)
 }
