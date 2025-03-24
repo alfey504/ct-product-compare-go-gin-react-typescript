@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"ct.com/ct_compare/controllers"
 	"ct.com/ct_compare/keys"
@@ -48,5 +49,10 @@ func main() {
 		})
 	})
 
-	r.Run(":8080")
+	env_port, ok := os.LookupEnv("PORT")
+	if !ok {
+		env_port = ":8080"
+	}
+
+	r.Run(env_port)
 }
