@@ -1,1 +1,1 @@
-web: ./ct_compare
+web: go run main.go
