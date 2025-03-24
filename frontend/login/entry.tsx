@@ -2,11 +2,13 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import App from "./page.tsx"
 
+ 
 const initialProps = (window as any).__INITIAL_PROPS__ 
 
-if (initialProps.authorized != undefined || initialProps.authorized) {
+if (initialProps.authorized) {
     window.location.replace("/app/product-compare")
 }
+console.log(initialProps)
 
 const applicationDOM = document.querySelector("#application")
 if (applicationDOM != null){

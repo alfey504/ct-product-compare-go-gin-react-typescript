@@ -8,6 +8,8 @@ import { globSync } from "glob"
 const reactEntryPoints = globSync("frontend/**/entry.tsx")
 const cssEntryPoints = globSync("frontend/**/*.css")
 
+const clientEnv = { "process.env.NODE_ENV": `"production"` };
+
 const context = await esbuild.context({
     entryPoints: [...reactEntryPoints, ...cssEntryPoints],
     outdir: "public/assets",
@@ -15,6 +17,9 @@ const context = await esbuild.context({
     plugins: [postCssPlugin()],
     loader: {".css": "css" },
     outbase: "frontend/",
+    define: clientEnv,
+    minify: true,
+    sourcemap: false,
 });
 
 

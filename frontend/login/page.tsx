@@ -29,14 +29,13 @@ export default  function Login(){
             setMessage(result.message)
             return
          } 
-
          window.location.replace("/app/product-compare")
     }
 
     return (
         <div className="h-screen flex items-center justify-center">
            <div className=" flex flex-col w-96 pt-14 pb-24 2justify-center items-center border-2 border-gray-100 rounded-2xl shadow-lg">
-                <img className=" w-36 h-36" src="/public/assets/images/can_tire_logo.svg" alt="canadian tire logo" />
+                <img className=" w-36 h-36" src="/public/images/can_tire_logo.svg" alt="canadian tire logo" />
                 <input className="h-10 w-64 mt-5 rounded-md border-2 border-gray-100 p-2" name="username" ref={usernameRef} placeholder="username" type ="text"/> 
                 <input className="h-10 w-64 mt-5 rounded-md border-2 border-gray-100 p-2" name="password" ref={passwordRef} placeholder="password" type="password"/>
                 {message == "" &&

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"ct.com/ct_compare/controllers"
@@ -17,12 +18,13 @@ func main() {
 
 	r := gin.Default()
 
-	r.Static("/public/assets/", "./public/assets/")
+	r.Static("/public/", "./public/")
 	r.LoadHTMLGlob("views/*")
 
 	r.POST("/login", controllers.LoginUser)
 	r.GET("/login", func(ctx *gin.Context) {
 		isAuthorized := utils.IsAuthorized(ctx)
+		fmt.Printf(fmt.Sprintf("%d\n", isAuthorized))
 		ctx.HTML(http.StatusOK, "index.tmpl", gin.H{
 			"route": "/login",
 			"props": gin.H{
