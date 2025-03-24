@@ -1,7 +1,7 @@
 import { ApiResponse, User } from "../type"
 
 export async function logIn(username: string, password: string): Promise<{success: boolean, message: string}> {
-    const url = "http://localhost:8080/login"
+    const url = "/login"
     const body = {
         username: username,
         password: password
