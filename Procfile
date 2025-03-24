@@ -1,1 +1,1 @@
-web: ./ct-compare
+web: ./ct_compare
