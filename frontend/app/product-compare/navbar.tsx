@@ -20,7 +20,7 @@ export function Navbar({
         <input className="w-96 h-10 mt-3 border-1 border-gray-300 p-2 rounded-lg shadow " type="text" placeholder="product #2" ref={product2Ref} />
         <div className="mt-3 text-sm text-red-500">*{(message == undefined)? "" : message}</div>
       </div>
-      <button className="w-10 h-10 self-end mb-8 ml-5 bg-rose-500 rounded-lg text-white shadow-2xl" onClick={() => buttonPress(true)}>69</button>
+      <button className="w-10 h-10 self-end mb-8 ml-5 bg-rose-500 rounded-lg text-white shadow-2xl text-2xl" onClick={() => buttonPress(true)}>♲</button>
       </div>
       
     </div>
