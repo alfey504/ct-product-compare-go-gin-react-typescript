@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"ct.com/ct_compare/keys"
 	"ct.com/ct_compare/models"
@@ -29,8 +30,12 @@ func GetUser() (models.User, error) {
 }
 
 func SetUserCookie(ctx *gin.Context, user models.User) {
-	ctx.SetCookie("Username", user.Username, 3600, "/", "localhost", false, true)
-	ctx.SetCookie("Password", user.Password, 3600, "/", "localhost", false, true)
+	hostString := ctx.Request.Host
+	parts := strings.Split(hostString, ":")
+	host := parts[0]
+
+	ctx.SetCookie("Username", user.Username, 3600, "/", host, false, true)
+	ctx.SetCookie("Password", user.Password, 3600, "/", host, false, true)
 }
 
 func GetUserCookie(ctx *gin.Context) (models.User, error) {
