@@ -29,6 +29,7 @@ export default  function Login(){
             setMessage(result.message)
             return
          } 
+         console.log(result)
         //  window.location.replace("/app/product-compare")
     }
 
