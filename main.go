@@ -14,7 +14,7 @@ import (
 
 func main() {
 	if err := utils.LoadEnv(".env", keys.OS_ENV_GEMINI_API_KEY); err != nil {
-		fmt.Errorf("failed to load env vars")
+		fmt.Printf("failed to load env vars")
 	}
 
 	r := gin.Default()
