@@ -18,6 +18,7 @@ func main() {
 	}
 
 	r := gin.Default()
+	r.Use(middleware.CorsMiddleware)
 
 	r.Static("/public/", "./public/")
 	r.LoadHTMLGlob("views/*")
