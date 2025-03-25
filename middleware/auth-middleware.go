@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -11,24 +12,29 @@ import (
 )
 
 func AuthMiddleware(ctx *gin.Context) {
-	user, err := utils.GetUser()
-	if err != nil {
-		respondInternalServerError(ctx)
-		return
-	}
 
-	userCookie, err := utils.GetUserCookie(ctx)
+	userCookie, err := utils.GetTokenCookie(ctx)
 	if err != nil {
+		fmt.Println(err.Error())
 		if err == http.ErrNoCookie {
 			respondUnauthorized(ctx)
 			return
 		}
+
 		respondInternalServerError(ctx)
 		return
 	}
 
-	if user.Username != userCookie.Username || user.Password != userCookie.Password {
+	err = utils.ValidateJWT(userCookie)
+	if err != nil && err == utils.ErrInvalidToken {
+		fmt.Println(err.Error())
 		respondUnauthorized(ctx)
+		return
+	}
+
+	if err != nil {
+		fmt.Println(err.Error())
+		respondInternalServerError(ctx)
 		return
 	}
 

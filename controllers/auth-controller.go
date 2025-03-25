@@ -52,7 +52,7 @@ func LoginUser(ctx *gin.Context) {
 		return
 	}
 
-	if loginRequest.Username != user.Username || loginRequest.Password != loginRequest.Password {
+	if loginRequest.Username != user.Username || !utils.ComparePasswords(user.Password, loginRequest.Password) {
 		ctx.JSON(http.StatusOK, response_model.ApiResponse{
 			StatusCode: http.StatusUnauthorized,
 			Message:    "incorrect username or password",
@@ -61,11 +61,21 @@ func LoginUser(ctx *gin.Context) {
 		return
 	}
 
-	utils.SetUserCookie(ctx, user)
+	token, err := utils.GenerateJwt(user.Username)
+	if err != nil {
+		fmt.Println(err.Error())
+		ctx.JSON(http.StatusOK, response_model.ApiResponse{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "there was an issue logging you in..",
+			Data:       nil,
+		})
+		return
+	}
+
+	utils.SetTokenCookie(ctx, token)
 	ctx.JSON(http.StatusOK, response_model.ApiResponse{
 		StatusCode: http.StatusOK,
 		Message:    "Success",
 		Data:       user,
 	})
-
 }

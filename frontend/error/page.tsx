@@ -1,5 +1,5 @@
 import React from "react"
-import { ErrorProp } from "../../type"
+import { ErrorProp } from "../type"
 
 export default function ErrorPage({ errorProps }: {errorProps: ErrorProp}) {
     console.log(errorProps.Message)

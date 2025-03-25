@@ -26,7 +26,6 @@ func main() {
 	r.POST("/login", controllers.LoginUser)
 	r.GET("/login", func(ctx *gin.Context) {
 		isAuthorized := utils.IsAuthorized(ctx)
-		fmt.Printf(fmt.Sprintf("%d\n", isAuthorized))
 		ctx.HTML(http.StatusOK, "index.tmpl", gin.H{
 			"route": "/login",
 			"props": gin.H{
@@ -58,4 +57,11 @@ func main() {
 	port := ":" + env_port
 	println("PORT -> ", port)
 	r.Run(port)
+}
+func generateHashedPassword(password string) {
+	hashedPass, err := utils.HashPassword(password)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf(hashedPass)
 }

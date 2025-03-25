@@ -29,44 +29,31 @@ func GetUser() (models.User, error) {
 	}, nil
 }
 
-func SetUserCookie(ctx *gin.Context, user models.User) {
+func SetTokenCookie(ctx *gin.Context, token string) {
 	hostString := ctx.Request.Host
 	parts := strings.Split(hostString, ":")
 	host := parts[0]
 
-	ctx.SetCookie("Username", user.Username, 3600, "/", host, false, true)
-	ctx.SetCookie("Password", user.Password, 3600, "/", host, false, true)
+	ctx.SetCookie("token", token, 3600, "/", host, false, true)
 }
 
-func GetUserCookie(ctx *gin.Context) (models.User, error) {
-	username, err := ctx.Cookie("Username")
+func GetTokenCookie(ctx *gin.Context) (string, error) {
+	token, err := ctx.Cookie("token")
 	if err != nil {
-		return models.User{}, err
+		return "", err
 	}
-
-	password, err := ctx.Cookie("Password")
-	if err != nil {
-		return models.User{}, err
-	}
-
-	return models.User{
-		Username: username,
-		Password: password,
-	}, nil
+	return token, nil
 }
 
 func IsAuthorized(ctx *gin.Context) bool {
-	user, err := GetUser()
+
+	token, err := GetTokenCookie(ctx)
 	if err != nil {
 		return false
 	}
 
-	userCookies, err := GetUserCookie(ctx)
+	err = ValidateJWT(token)
 	if err != nil {
-		return false
-	}
-
-	if user.Username != userCookies.Username || user.Password != user.Password {
 		return false
 	}
 
