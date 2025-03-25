@@ -30,7 +30,7 @@ export default  function Login(){
             return
          } 
          console.log(result)
-        //  window.location.replace("/app/product-compare")
+         window.location.replace("/app/product-compare")
     }
 
     return (
