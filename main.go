@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 
-	"ct.com/ct_compare/api_services/search_services"
-	"ct.com/ct_compare/controllers"
 	"ct.com/ct_compare/keys"
 	"ct.com/ct_compare/middleware"
+	"ct.com/ct_compare/routes/api_routes"
+	"ct.com/ct_compare/routes/app_route"
 	"ct.com/ct_compare/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -18,39 +17,15 @@ func main() {
 		fmt.Println(err.Error())
 	}
 
-	search_services.SearchProducts("tv")
-
 	r := gin.Default()
 	r.Use(middleware.CorsMiddleware)
 
 	r.Static("/public/", "./public/")
 	r.LoadHTMLGlob("views/*")
 
-	r.POST("/login", controllers.LoginUser)
-	r.GET("/login", func(ctx *gin.Context) {
-		isAuthorized := utils.IsAuthorized(ctx)
-		ctx.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"route": "/login",
-			"props": gin.H{
-				"authorized": isAuthorized,
-			},
-		})
-	})
-
-	apiGroup := r.Group("/api")
-	apiGroup.Use(middleware.AuthMiddleware)
-
-	apiGroup.GET("/product", controllers.ProductController)
-
-	appGroup := r.Group("/app")
-	appGroup.Use(middleware.AuthMiddleware)
-
-	appGroup.GET("/*path", func(ctx *gin.Context) {
-		route := ctx.Request.RequestURI
-		ctx.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"route": route,
-		})
-	})
+	api_routes.SetLoginRoutes(r)
+	api_routes.SetApiRouting(r)
+	app_route.SetAppRouting(r)
 
 	env_port, ok := os.LookupEnv("PORT")
 	if !ok {
@@ -62,10 +37,10 @@ func main() {
 	r.Run(port)
 }
 
-func generateHashedPassword(password string) {
-	hashedPass, err := utils.HashPassword(password)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf(hashedPass)
-}
+// func generateHashedPassword(password string) {
+// 	hashedPass, err := utils.HashPassword(password)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	fmt.Printf(hashedPass)
+// }
