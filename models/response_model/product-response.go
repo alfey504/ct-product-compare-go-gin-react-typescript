@@ -10,7 +10,7 @@ type ProductResponse struct {
 	} `json:"images"`
 	Name             string        `json:"name"`
 	Code             string        `json:"code"`
-	Rating           string        `json:"rating"`
+	Rating           int           `json:"rating"`
 	RatingsCount     string        `json:"ratingsCount"`
 	Options          []interface{} `json:"options"`
 	ShortDescription string        `json:"shortDescription"`

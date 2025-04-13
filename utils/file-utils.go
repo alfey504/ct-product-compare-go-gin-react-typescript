@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"os"
+	"time"
 )
 
 func WriteBytesToFile(filename string, data []byte) error {
@@ -13,4 +14,34 @@ func WriteBytesToFile(filename string, data []byte) error {
 	}
 
 	return nil
+}
+
+func LogToFile(name string, data []byte) {
+	fileName := "logs/" + name + "_" + time.Now().String()
+
+	file, err := os.Create(fileName)
+	if err != nil {
+		fmt.Printf("logging error : %s", err.Error())
+		return
+	}
+	_, err = file.Write(data)
+	if err != nil {
+		fmt.Printf("logging error : %s", err.Error())
+	}
+
+}
+
+func LogJSONFile(name string, data []byte) {
+	fileName := "logs/" + name + "_" + time.Now().String() + ".json"
+
+	file, err := os.Create(fileName)
+	if err != nil {
+		fmt.Printf("logging error : %s", err.Error())
+		return
+	}
+	_, err = file.Write(data)
+	if err != nil {
+		fmt.Printf("logging error : %s", err.Error())
+	}
+
 }

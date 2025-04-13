@@ -58,7 +58,7 @@ func makeProductDescription(product models.Product) string {
 	productDescription.Add("Name", product.Name)
 	productDescription.Add("Short Description", product.ShortDescription)
 	productDescription.Add("Description", product.Description)
-	productDescription.Add("Rating", product.Rating)
+	productDescription.Add("Rating", fmt.Sprintf("%d", product.Rating))
 	productDescription.Add("RatingsCount", product.RatingsCount)
 	productDescription.Add("Specification", specString)
 	productDescription.Add("Features", featureStrings)

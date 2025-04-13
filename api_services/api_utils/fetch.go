@@ -23,25 +23,27 @@ type RequestConfig struct {
 	Body    interface{}
 }
 
-func Fetch[K interface{}](config RequestConfig, model *K) FetchError {
+func Fetch[K interface{}](config RequestConfig) FetchError[K] {
 	if !slices.Contains(AVAILABLE_METHODS, config.Method) {
 		err := fmt.Errorf("unknown method : %s ", config.Method)
-		return FetchError{
+		return FetchError[K]{
 			StatusCode: -1,
 			Status:     fmt.Sprintf("unknown method : %s ", config.Method),
 			Message:    fmt.Sprintf("unknown method : %s ", config.Method),
 			Err:        err,
+			Data:       *new(K),
 		}
 	}
 
 	req, err := MakeRequest(config)
 	if err != nil {
 		fmt.Printf("Failed to make request error : %s \n", err.Error())
-		return FetchError{
+		return FetchError[K]{
 			StatusCode: -1,
 			Status:     "Failed to make request object",
 			Message:    "Failed to make request object",
 			Err:        err,
+			Data:       *new(K),
 		}
 	}
 
@@ -53,50 +55,60 @@ func Fetch[K interface{}](config RequestConfig, model *K) FetchError {
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("Request failed : ", err.Error())
-		return FetchError{
+		return FetchError[K]{
 			StatusCode: resp.StatusCode,
 			Status:     resp.Status,
 			Message:    "Error making api call",
 			Err:        err,
+			Data:       *new(K),
 		}
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
 		msg := fmt.Sprintf("returned status code : %d status : %s", resp.StatusCode, resp.Status)
-		return FetchError{
+		return FetchError[K]{
 			StatusCode: resp.StatusCode,
 			Status:     resp.Status,
 			Message:    "api request failed",
 			Err:        fmt.Errorf(msg),
+			Data:       *new(K),
 		}
 	}
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Failed to parse the response body")
-		return FetchError{
+		return FetchError[K]{
 			StatusCode: resp.StatusCode,
 			Status:     resp.Status,
 			Message:    "Failed to parse api body",
 			Err:        err,
+			Data:       *new(K),
 		}
 	}
+	defer resp.Body.Close()
 
-	if err := json.Unmarshal(body, model); err != nil {
+	// fmt.Println(string(body))
+	// utils.LogJSONFile("api_response", body)
+	var data K
+	if err := json.Unmarshal(body, &data); err != nil {
 		fmt.Println("Failed to parse body to model : ", err.Error())
-		return FetchError{
+		return FetchError[K]{
 			StatusCode: resp.StatusCode,
 			Status:     resp.Status,
 			Message:    "failed to parse response body",
 			Err:        err,
+			Data:       *new(K),
 		}
 	}
 
-	return FetchError{
+	return FetchError[K]{
 		StatusCode: resp.StatusCode,
 		Status:     resp.Status,
 		Message:    "Success",
 		Err:        nil,
+		Data:       data,
 	}
 }
 

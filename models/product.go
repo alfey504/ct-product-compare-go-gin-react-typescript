@@ -8,7 +8,7 @@ type Product struct {
 	Name             string
 	ShortDescription string
 	Description      string
-	Rating           string
+	Rating           int
 	RatingsCount     string
 	Specifications   []Specification
 	Features         []string

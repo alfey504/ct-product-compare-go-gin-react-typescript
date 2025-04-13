@@ -41,14 +41,15 @@ type GeminiResponse struct {
 }
 
 // custom request
-func GetSummary(p1 models.Product, p2 models.Product) (models.Summary, api_utils.FetchError) {
+func GetSummary(p1 models.Product, p2 models.Product) api_utils.FetchError[models.Summary] {
 	apiKey, ok := os.LookupEnv(keys.OS_ENV_GEMINI_API_KEY)
 	if !ok {
-		return models.Summary{}, api_utils.FetchError{
+		return api_utils.FetchError[models.Summary]{
 			StatusCode: -1,
 			Status:     "missing env variables",
 			Message:    "Failed to get product summary due to internal server issues",
 			Err:        fmt.Errorf("missing env variable GEMINI_API_KEY"),
+			Data:       *new(models.Summary),
 		}
 	}
 	url := fmt.Sprintf("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=%s", apiKey)
@@ -63,9 +64,9 @@ func GetSummary(p1 models.Product, p2 models.Product) (models.Summary, api_utils
 	}
 
 	geminiResponse := GeminiResponse{}
-	if err := api_utils.Fetch(config, &geminiResponse); err.IsError() {
+	if err := api_utils.Fetch[GeminiResponse](config); err.IsError() {
 		fmt.Println("Failed to make the request , ", err.Error())
-		return models.Summary{}, err
+		return api_utils.TranslateTo(err, *new(models.Summary))
 	}
 
 	println()
@@ -77,18 +78,20 @@ func GetSummary(p1 models.Product, p2 models.Product) (models.Summary, api_utils
 	summary, err := models.MakeSummary(strippedText)
 	if err != nil {
 		fmt.Println("Failed to make the summary model")
-		return models.Summary{}, api_utils.FetchError{
+		return api_utils.FetchError[models.Summary]{
 			StatusCode: -1,
 			Status:     "Failed parsing json",
 			Message:    "Failed to get product summary due to Internal Server Error",
 			Err:        err,
+			Data:       *new(models.Summary),
 		}
 	}
 
-	return summary, api_utils.FetchError{
+	return api_utils.FetchError[models.Summary]{
 		StatusCode: -1,
 		Status:     "Success",
 		Message:    "Success",
 		Err:        nil,
+		Data:       summary,
 	}
 }

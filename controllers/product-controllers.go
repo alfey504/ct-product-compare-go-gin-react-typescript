@@ -32,12 +32,12 @@ func ProductController(ctx *gin.Context) {
 		return
 	}
 
-	productCompare, err := product_services.ProductCompare(prod1, prod2)
-	if err.IsError() {
-		println(err.Error())
+	productCompare := product_services.ProductCompare(prod1, prod2)
+	if productCompare.IsError() {
+		println(productCompare.Error())
 		ctx.JSON(http.StatusOK, response_model.ApiResponse{
-			StatusCode: err.StatusCode,
-			Message:    err.Message,
+			StatusCode: productCompare.StatusCode,
+			Message:    productCompare.Message,
 			Data:       nil,
 		})
 		return
@@ -46,6 +46,6 @@ func ProductController(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response_model.ApiResponse{
 		StatusCode: http.StatusOK,
 		Message:    "Success",
-		Data:       productCompare,
+		Data:       productCompare.Data,
 	})
 }

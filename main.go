@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"ct.com/ct_compare/api_services/search_services"
 	"ct.com/ct_compare/controllers"
 	"ct.com/ct_compare/keys"
 	"ct.com/ct_compare/middleware"
@@ -14,8 +15,10 @@ import (
 
 func main() {
 	if err := utils.LoadEnv(".env", keys.OS_ENV_GEMINI_API_KEY); err != nil {
-		fmt.Printf("failed to load env vars")
+		fmt.Println(err.Error())
 	}
+
+	search_services.SearchProducts("tv")
 
 	r := gin.Default()
 	r.Use(middleware.CorsMiddleware)
@@ -58,6 +61,7 @@ func main() {
 	println("PORT -> ", port)
 	r.Run(port)
 }
+
 func generateHashedPassword(password string) {
 	hashedPass, err := utils.HashPassword(password)
 	if err != nil {
