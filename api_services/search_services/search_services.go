@@ -10,13 +10,20 @@ import (
 	"ct.com/ct_compare/models/response_model"
 )
 
-func SearchProducts(search string) api_utils.FetchError[response_model.SearchResponse] {
+func SearchProducts(search string, page int) api_utils.FetchError[response_model.SearchResponse] {
 	categoryResponse := ResolveCategory(search)
+	println(categoryResponse.Data.Resolve)
 	if categoryResponse.IsError() {
 		fmt.Println(categoryResponse.Error())
 	}
 
-	url := fmt.Sprintf("https://apim.canadiantire.ca/v1/search/v2/search?rq=%s&store=175", search)
+	url := ""
+	if page < 0 {
+		url = fmt.Sprintf("https://apim.canadiantire.ca/v1/search/v2/search?rq=%s&store=175", search)
+	} else {
+		url = fmt.Sprintf("https://apim.canadiantire.ca/v1/search/v2/search?rq=%s&store=175&page=%d", search, page)
+	}
+
 	ocp_apim_subscription_key, ok := os.LookupEnv(keys.OS_ENV_OCP_APIM_SUBSCRIPTION_KEY)
 	if !ok {
 		return api_utils.FetchError[response_model.SearchResponse]{

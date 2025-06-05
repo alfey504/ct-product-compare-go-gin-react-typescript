@@ -116,12 +116,14 @@ func ResolveCategory(query string) api_utils.FetchError[ResolvedQuery] {
 }
 
 func getCategoryFromUrl(url string) (string, error) {
+	println(url)
 	splitString := strings.Split(url, "/")
-	if len(splitString) < 7 {
+	splitStringLen := len(splitString)
+	if len(splitString) < 1 {
 		return "", fmt.Errorf("there was an issue parsing the url")
 	}
 
-	categorySection := splitString[6]
+	categorySection := splitString[splitStringLen-1]
 	splitString = strings.Split(categorySection, "-")
 	if len(splitString) < 2 {
 		return "", fmt.Errorf("there was an issue parsing the url")

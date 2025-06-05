@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"ct.com/ct_compare/api_services/search_services"
 	"ct.com/ct_compare/models/response_model"
@@ -19,7 +20,15 @@ func GetSearchResults(c *gin.Context) {
 		return
 	}
 
-	searchResponse := search_services.SearchProducts(searchQuery)
+	page := -1
+	if queryPage := c.Query("page"); queryPage != "" {
+		pageInt, err := strconv.Atoi(queryPage)
+		if err == nil {
+			page = pageInt
+		}
+	}
+
+	searchResponse := search_services.SearchProducts(searchQuery, page)
 
 	c.JSON(http.StatusOK, response_model.ApiResponse{
 		StatusCode: searchResponse.StatusCode,
