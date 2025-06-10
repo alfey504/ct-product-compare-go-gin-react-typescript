@@ -8,6 +8,6 @@ import (
 func SetApiRouting(r *gin.Engine) {
 	apiGroup := r.Group("/api")
 	apiGroup.Use(middleware.AuthMiddleware)
-	SetProductRoutes(apiGroup)
+	SetCompareRoutes(apiGroup)
 	SetSearchRoute(apiGroup)
 }

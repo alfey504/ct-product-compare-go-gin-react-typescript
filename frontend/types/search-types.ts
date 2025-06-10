@@ -61,7 +61,7 @@ export type SearchResponse = {
   
   export type Availability = {
     quantity: number;
-    storeShelfLocation: any; // Could be string | null if that's the case
+    storeShelfLocation: string | null; // Could be string | null if that's the case
     altLocations: any; // Could be an array of a specific type or null
   };
   

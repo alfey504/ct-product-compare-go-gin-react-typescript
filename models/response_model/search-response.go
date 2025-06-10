@@ -10,6 +10,8 @@ type Product struct {
 	Code               string             `json:"code"`
 	Title              string             `json:"title"`
 	Images             []Image            `json:"images"`
+	ShortDescription   string             `json:"shortDescription"`
+	LongDescription    string             `json:"longDescription"`
 	Brand              Brand              `json:"brand"`
 	Rating             float64            `json:"rating"`
 	RatingsCount       int                `json:"ratingsCount"`

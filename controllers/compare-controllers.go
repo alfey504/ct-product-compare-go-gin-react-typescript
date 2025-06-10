@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ProductController(ctx *gin.Context) {
+func CompareController(ctx *gin.Context) {
 
 	prod1 := ctx.Query("prod1")
 	prod2 := ctx.Query("prod2")
