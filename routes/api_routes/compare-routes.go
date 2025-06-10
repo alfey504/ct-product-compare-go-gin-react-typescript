@@ -6,5 +6,5 @@ import (
 )
 
 func SetCompareRoutes(apiGroup *gin.RouterGroup) {
-	apiGroup.GET("/product", controllers.CompareController)
+	apiGroup.GET("/compare", controllers.CompareController)
 }

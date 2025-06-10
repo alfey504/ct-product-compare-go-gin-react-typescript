@@ -10,4 +10,5 @@ func SetApiRouting(r *gin.Engine) {
 	apiGroup.Use(middleware.AuthMiddleware)
 	SetCompareRoutes(apiGroup)
 	SetSearchRoute(apiGroup)
+	SetProductRoutes(apiGroup)
 }
