@@ -10,10 +10,17 @@ type Product struct {
 	Description      string
 	Rating           string
 	RatingsCount     string
+	CurrentPrice     CurrentPrice
 	Specifications   []Specification
 	Features         []string
 	ReviewSummary    ReviewSummary
 	Summary          []string
+}
+
+type CurrentPrice struct {
+	Value    float64
+	MaxPrice float64
+	MinPrice float64
 }
 
 type Specification struct {
@@ -62,6 +69,22 @@ func MakeProduct(productResp response_model.ProductResponse, reviewSummaryResp r
 		}
 		specifications = append(specifications, specification)
 	}
+
+	value := productResp.CurrentPrice.Value
+	minPrice := productResp.CurrentPrice.MinPrice
+	var maxPrice float64
+	if productResp.CurrentPrice.MaxPrice == nil {
+		maxPrice = 0
+	} else {
+		maxPrice = *productResp.CurrentPrice.MaxPrice
+	}
+
+	currentPrice := CurrentPrice{
+		Value:    value,
+		MinPrice: minPrice,
+		MaxPrice: maxPrice,
+	}
+
 	return Product{
 		Name:             productResp.Name,
 		ShortDescription: productResp.ShortDescription,
@@ -71,6 +94,7 @@ func MakeProduct(productResp response_model.ProductResponse, reviewSummaryResp r
 		Specifications:   specifications,
 		Features:         features,
 		ReviewSummary:    reviewSummary,
+		CurrentPrice:     currentPrice,
 	}
 }
 

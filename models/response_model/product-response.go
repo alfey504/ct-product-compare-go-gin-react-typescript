@@ -15,7 +15,12 @@ type ProductResponse struct {
 	Options          []interface{} `json:"options"`
 	ShortDescription string        `json:"shortDescription"`
 	LongDescription  string        `json:"longDescription"`
-	FeatureBullets   []struct {
+	CurrentPrice     struct {
+		Value    float64  `json:"value"`
+		MaxPrice *float64 `json:"maxPrice"`
+		MinPrice float64  `json:"minPrice"`
+	} `json:"currentPrice"`
+	FeatureBullets []struct {
 		Description string `json:"description"`
 	} `json:"featureBullets"`
 	Specifications []struct {
