@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Pagination, Product, SearchResponse } from "../../types/search-types";
 import { SearchData } from "./search-services";
-import { ProductDetails } from "./product-dertails";
+import { ProductDetails } from "./product-details";
 
 export type PageData = {
     searchData: SearchData | undefined;

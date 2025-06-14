@@ -1,5 +1,5 @@
 import React from "react";
-import { Product, Review, Subject } from "../../type";
+import { Product, Review, Subject } from "../../types/product-type";
 
 export default function ReviewSummary({
   product1,

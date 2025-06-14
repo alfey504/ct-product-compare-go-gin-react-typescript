@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
-import { Product, ProductCompare, Review, Subject } from "../../type";
-import { getSummary, tempGetSummary } from "./services";
+import { Product, ProductCompare, Review, Subject } from "../../types/product-type";
+import { getSummary } from "./services";
 import ProductSummary from "./product_summary";
 import { Navbar } from "./navbar";
 import { ProductDetails } from "./product_details";
