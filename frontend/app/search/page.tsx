@@ -49,9 +49,9 @@ export default function Page() {
         }
 
         const searchData = new SearchData()
-        searchData.search(searchQuery)
-
-        if (searchData == undefined) {
+        const err = await searchData.search(searchQuery)
+        if (err != undefined){
+            console.error(err)
             setPageData({
                 searchData: undefined,
                 message: "there was an issue searching",
@@ -60,6 +60,7 @@ export default function Page() {
             return;
         }
 
+        console.log(searchData.getProducts()[0])
         setPageData({
             searchData: searchData,
             message: undefined,
@@ -136,7 +137,7 @@ function ProductsSection({
     return (
         <div className={className}>
             {/* <SearchGrid pageData={pageData} addToCompare={addToCompare} isOnCart={isOnCart}/> */}
-            <ProductDetails className="w-full" product={pageData.searchData?.searchData[0]} addToCompare={addToCompare} isOnCart={isOnCart} />
+            <ProductDetails className="w-full" product={pageData.searchData?.getProducts()[0]} addToCompare={addToCompare} isOnCart={isOnCart} />
         </div>
     );
 }
