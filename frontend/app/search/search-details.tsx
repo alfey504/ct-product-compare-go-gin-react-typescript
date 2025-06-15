@@ -1,6 +1,6 @@
 import React from "react";
 import { Product } from "../../types/search-types";
-import { PageData } from "./page";
+import { AddToCompareType, IsOnCartType, PageData } from "./page";
 
 
 export function SearchGrid({
@@ -8,11 +8,13 @@ export function SearchGrid({
     pageData,
     addToCompare,
     isOnCart,
+    selectProduct,
 }: {
     className?: string;
     pageData: PageData;
-    addToCompare: (product: Product) => Promise<void>;
-    isOnCart: (product: Product) => boolean;
+    addToCompare: AddToCompareType;
+    isOnCart: IsOnCartType;
+    selectProduct: (productNo: string) => void
 }) {
     return (
         <div className={className}>
@@ -24,6 +26,7 @@ export function SearchGrid({
                                 product={product}
                                 addToCompare={addToCompare}
                                 isOnCart={isOnCart}
+                                onClick={async () => selectProduct(product.skuId)}
                             />
                         );
                     })}
@@ -38,11 +41,13 @@ function ProductCard({
     product,
     addToCompare,
     isOnCart,
+    onClick,
 }: {
     className?: string;
     product: Product;
-    addToCompare: (product: Product) => Promise<void>;
-    isOnCart: (product: Product) => boolean;
+    addToCompare: AddToCompareType;
+    isOnCart: IsOnCartType;
+    onClick: () => Promise<void>
 }) {
     const trimmedTitle =
         product.title.length <= 30
@@ -55,7 +60,7 @@ function ProductCard({
         return star.repeat(rating) + emptyStar.repeat(5 - rating);
     })();
     const rating = product.rating.toFixed(1);
-    const buttonState = isOnCart(product) ? "Remove" : "Add";
+    const buttonState = isOnCart(product.skuId) ? "Remove" : "Add";
 
     console.log(
         product.totalOriginalPrice.value +
@@ -65,7 +70,7 @@ function ProductCard({
         product.totalOriginalPrice.value
     );
     return (
-        <div className={className}>
+        <div className={className} onClick={() => onClick()}>
             <div className="flex flex-col p-4 border-2  rounded-xl border-gray-200 shadow-lg mt-3 mb-3 ml-3 mr-3 h-96">
                 <div className="flex justify-center items-center w-52 h-52">
                     <img src={product.images[0].url} width="50%" height="50%" />
@@ -84,7 +89,7 @@ function ProductCard({
                     <button
                         className=" bg-green-800  text-white pt-2 pb-2 pl-3 pr-3 rounded-lg"
                         onClick={() => {
-                            addToCompare(product);
+                            addToCompare(product.skuId);
                         }}
                     >
                         {buttonState}

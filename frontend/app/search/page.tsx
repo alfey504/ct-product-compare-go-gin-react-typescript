@@ -2,12 +2,21 @@ import React, { useRef, useState } from "react";
 import { Pagination, Product, SearchResponse } from "../../types/search-types";
 import { SearchData } from "./search-services";
 import { ProductDetails } from "./product-details";
+import { ProductDetailsManager } from "./product-service";
+import { SearchGrid } from "./search-details";
 
+const SEARCH_MODE = "search_mode"
+const PRODUCT_MODE = "product_mode"
 export type PageData = {
     searchData: SearchData | undefined;
     message: string | undefined;
     compareCart: Product[];
+    productDetailsManager : ProductDetailsManager;
+    mode: string
 };
+
+export type AddToCompareType = (productNo: string) => Promise<void>
+export type IsOnCartType = (productNo: string) => boolean
 
 export default function Page() {
     const searchRef = useRef<HTMLInputElement | null>(null);
@@ -16,29 +25,37 @@ export default function Page() {
         searchData: undefined,
         message: "Please enter a query to search",
         compareCart: [],
+        productDetailsManager: new ProductDetailsManager(),
+        mode: SEARCH_MODE
     });
 
-    const isOnCart = (product: Product): boolean => {
+    const isOnCart = (productNo: string): boolean => {
         for (let i = 0; i < pageData.compareCart.length; i++) {
-            console.log(product.title);
-            if (pageData.compareCart[i].title == product.title) {
+            if (pageData.compareCart[i].skuId == productNo) {
                 return true;
             }
         }
         return false;
     };
 
-    const addToCompare = async (product: Product) => {
+    const addToCompare = async (productNo: string) => {
         let compareCart = pageData.compareCart;
-        if (isOnCart(product)) {
-            compareCart = compareCart.filter((item) => item !== product);
+        if (isOnCart(productNo)) {
+            compareCart = compareCart.filter((item) => item.skuId !== productNo);
         } else {
+            const product = pageData.searchData?.getProduct(productNo)
+            if (product == undefined) {
+                console.log("failed to add item to card")
+                return
+            }
             compareCart.push(product);
         }
         setPageData({
             searchData: pageData.searchData,
             message: "",
             compareCart: compareCart,
+            productDetailsManager: pageData.productDetailsManager,
+            mode: pageData.mode
         });
     };
 
@@ -56,6 +73,8 @@ export default function Page() {
                 searchData: undefined,
                 message: "there was an issue searching",
                 compareCart: pageData.compareCart,
+                productDetailsManager: pageData.productDetailsManager,
+                mode: SEARCH_MODE
             });
             return;
         }
@@ -65,17 +84,47 @@ export default function Page() {
             searchData: searchData,
             message: undefined,
             compareCart: pageData.compareCart,
+            productDetailsManager: new ProductDetailsManager(),
+            mode: SEARCH_MODE
         });
     };
 
+    const selectProduct = async (productNo: string) => {
+        const err = await pageData.productDetailsManager.getProduct(productNo)
+        if (err != undefined) {
+            console.error(err)
+            return
+        }  
+        console.log("selectProductRan with no errors")
+        setPageData({
+            searchData: pageData.searchData,
+            message: undefined,
+            compareCart: pageData.compareCart,
+            productDetailsManager: pageData.productDetailsManager,
+            mode: PRODUCT_MODE
+        });
+    }
+
+    const backFromProductState = () => {
+        setPageData({
+            searchData: pageData.searchData,
+            message: undefined,
+            compareCart: pageData.compareCart,
+            productDetailsManager: pageData.productDetailsManager,
+            mode: SEARCH_MODE
+        });
+    }
+
     return (
-        <div>
+        <div className=" pb-20">
             <NavBar searchRef={searchRef} onSearch={onSearch} />
             <ProductsSection
                 className="ml-20 mr-20 flex justify-start"
                 pageData={pageData}
                 addToCompare={addToCompare}
                 isOnCart={isOnCart}
+                selectProduct={selectProduct}
+                backFromProductState={backFromProductState}
             />
             {/* <div className="flex flex-row justify-around flex-wrap mt-10 items-center">
                 {pageData.searchData?.searchData.map((product) => {
@@ -127,17 +176,25 @@ function ProductsSection({
     pageData,
     addToCompare,
     isOnCart,
+    selectProduct,
+    backFromProductState,
 }: {
     className?: string;
     pageData: PageData;
-    addToCompare: (product: Product) => Promise<void>;
-    isOnCart: (product: Product) => boolean;
+    addToCompare: AddToCompareType
+    isOnCart: IsOnCartType
+    selectProduct: (productNo: string) => void
+    backFromProductState: () => void 
 }) {
+
 
     return (
         <div className={className}>
-            {/* <SearchGrid pageData={pageData} addToCompare={addToCompare} isOnCart={isOnCart}/> */}
-            <ProductDetails className="w-full" product={pageData.searchData?.getProducts()[0]} addToCompare={addToCompare} isOnCart={isOnCart} />
+            {pageData.mode == SEARCH_MODE &&
+                <SearchGrid pageData={pageData} addToCompare={addToCompare} isOnCart={isOnCart} selectProduct={selectProduct}/>
+            }{pageData.mode == PRODUCT_MODE &&
+                <ProductDetails className="w-full" productDetailsManager={pageData.productDetailsManager} addToCompare={addToCompare} isOnCart={isOnCart} backFromProductState={backFromProductState}/>
+            }
         </div>
     );
 }

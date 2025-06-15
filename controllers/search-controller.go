@@ -29,6 +29,14 @@ func GetSearchResults(c *gin.Context) {
 	}
 
 	searchResponse := search_services.SearchProducts(searchQuery, page)
+	if searchResponse.IsError() {
+		c.JSON(http.StatusOK, response_model.ApiResponse{
+			StatusCode: searchResponse.StatusCode,
+			Message:    searchResponse.Message,
+			Data:       nil,
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, response_model.ApiResponse{
 		StatusCode: searchResponse.StatusCode,

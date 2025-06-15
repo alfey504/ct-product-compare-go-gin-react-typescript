@@ -1,16 +1,17 @@
 import { ApiResponse } from "../../type"
 import { Product } from "../../types/product-type"
 
-export class ProductDetails {
+export class ProductDetailsManager {
     products = new Map<string, Product>()
     selectedProduct: Product 
     
-    getSelectedProduct(productNo: string) : Product {
+    getSelectedProduct() : Product {
         return this.selectedProduct
     }
 
-    async getProduct(productNo: string): Promise<Error | undefined> { 
-        const product = this.products.get(productNo)
+    async getProduct(number: string): Promise<Error | undefined> {
+        const productNo = number.replaceAll("-", "").slice(0, -1)
+        const product =  this.products.get(productNo)
         if (product != undefined) {
             this.selectedProduct = product
             return undefined
@@ -18,13 +19,13 @@ export class ProductDetails {
         
         const productResponse = await getProductDetails(productNo)
         if (productResponse == undefined) {
-            return new Error("failed to fetch product")
+            return new Error("failed to fetch product -> returned undefined")
         }
 
         if (productResponse.Data == null) {
-            return new Error("failed to fetch product")
-        }
-
+            return new Error("failed to fetch product -> " + productResponse.Message)
+        }   
+        
         this.products.set(productNo, productResponse.Data)
         this.selectedProduct = productResponse.Data
         return undefined

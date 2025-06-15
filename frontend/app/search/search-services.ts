@@ -14,6 +14,18 @@ export class SearchData {
         return this.products
     }
 
+    public getProduct(productNo: string): Product | undefined {
+        const allProducts = this.searchData.values()
+        for (const products of allProducts) {
+            for (const product of products) {
+                if (product.skuId == productNo){
+                    return product
+                }
+            }
+        }
+        return undefined
+    }
+
     public async search(searchQuery: string) : Promise<Error | undefined> {
         const result = await getSearchResults(searchQuery) 
         if (result == undefined) {

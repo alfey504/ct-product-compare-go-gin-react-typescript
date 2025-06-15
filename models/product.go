@@ -5,6 +5,7 @@ import (
 )
 
 type Product struct {
+	Images           []Image
 	Name             string
 	ShortDescription string
 	Description      string
@@ -15,6 +16,22 @@ type Product struct {
 	Features         []string
 	ReviewSummary    ReviewSummary
 	Summary          []string
+	Fulfillment      Fulfillment
+	Code             string
+	Sku              string
+}
+
+type Image struct {
+	AltText                 string
+	MediaType               string
+	IsListingThumbnailImage bool
+	URL                     string
+	DisplayPriority         int
+}
+
+type Fulfillment struct {
+	Quantity    int
+	AltLocation string
 }
 
 type CurrentPrice struct {
@@ -79,6 +96,30 @@ func MakeProduct(productResp response_model.ProductResponse, reviewSummaryResp r
 		maxPrice = *productResp.CurrentPrice.MaxPrice
 	}
 
+	quantity := productResp.Fulfillment.Availability.Quantity
+	var altLocation string
+	if productResp.Fulfillment.Availability.AltLocations == nil {
+		altLocation = "None"
+	} else {
+		altLocation = *productResp.Fulfillment.Availability.AltLocations
+	}
+	fulfillment := Fulfillment{
+		Quantity:    quantity,
+		AltLocation: altLocation,
+	}
+
+	images := []Image{}
+	for _, img := range productResp.Images {
+		image := Image{
+			AltText:                 img.AltText,
+			URL:                     img.URL,
+			MediaType:               img.MediaType,
+			IsListingThumbnailImage: img.IsListingThumbnailImage,
+			DisplayPriority:         img.DisplayPriority,
+		}
+		images = append(images, image)
+	}
+
 	currentPrice := CurrentPrice{
 		Value:    value,
 		MinPrice: minPrice,
@@ -86,6 +127,7 @@ func MakeProduct(productResp response_model.ProductResponse, reviewSummaryResp r
 	}
 
 	return Product{
+		Images:           images,
 		Name:             productResp.Name,
 		ShortDescription: productResp.ShortDescription,
 		Description:      productResp.LongDescription,
@@ -95,6 +137,9 @@ func MakeProduct(productResp response_model.ProductResponse, reviewSummaryResp r
 		Features:         features,
 		ReviewSummary:    reviewSummary,
 		CurrentPrice:     currentPrice,
+		Fulfillment:      fulfillment,
+		Code:             productResp.Code,
+		Sku:              productResp.Skus[0].Code,
 	}
 }
 

@@ -31,6 +31,7 @@ type Product struct {
 	Orderable          bool               `json:"orderable"`
 	Fulfillment        Fulfillment        `json:"fulfillment"`
 	WarrantyMessage    string             `json:"warrantyMessage"`
+	SkuCode            string             `json:"skuCode"`
 }
 
 type Image struct {

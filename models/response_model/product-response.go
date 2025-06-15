@@ -15,7 +15,10 @@ type ProductResponse struct {
 	Options          []interface{} `json:"options"`
 	ShortDescription string        `json:"shortDescription"`
 	LongDescription  string        `json:"longDescription"`
-	CurrentPrice     struct {
+	Skus             []struct {
+		Code string `json:"code"`
+	} `json:"skus"`
+	CurrentPrice struct {
 		Value    float64  `json:"value"`
 		MaxPrice *float64 `json:"maxPrice"`
 		MinPrice float64  `json:"minPrice"`
@@ -30,5 +33,11 @@ type ProductResponse struct {
 		Visibility bool   `json:"visibility"`
 		Position   int    `json:"position"`
 	} `json:"specifications"`
-	Type string `json:"type"`
+	Type        string `json:"type"`
+	Fulfillment struct {
+		Availability struct {
+			Quantity     int `json:"quantity"`
+			AltLocations *string
+		} `json:"availability"`
+	} `json:"fulfillment"`
 }

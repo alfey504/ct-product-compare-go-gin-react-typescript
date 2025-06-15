@@ -8,6 +8,7 @@ export type ProductCompare = {
 
 export type Product =  {
     Name : string
+    Images : Image[]
     ShortDescription: string
     Description: string
     Rating : string
@@ -17,6 +18,22 @@ export type Product =  {
     Features: string[]
     ReviewSummary : ReviewSummary
     Summary: string[] | null
+    Fulfillment: Fulfillment
+    Sku: string
+    Code: string
+}
+
+export type Image = {
+    AltText: string
+    MediaType: string
+    IsListingThumbnailImage: boolean
+    URL: string
+    DisplayPriority: number
+}
+
+export type Fulfillment = {
+    Quantity : number
+    ALtLocation : string
 }
 
 export type Price =  {
